@@ -1,16 +1,19 @@
 package com.example;
-
 import java.util.Objects;
 
 public class Employee {
     private String name;
     private String position;
     private double salary;
+    private String department;
+    private int experienceYears;
 
-    public Employee(String name, String position, double salary) {
-        this.name = name;
-        this.position = position;
-        this.salary = salary;
+    public Employee(String name, String position, double salary, String department, int experienceYears) {
+        setName(name);
+        setPosition(position);
+        setSalary(salary);
+        setDepartment(department);
+        setExperienceYears(experienceYears);
     }
 
     public String getName() {
@@ -37,12 +40,30 @@ public class Employee {
         this.salary = salary;
     }
 
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public int getExperienceYears() {
+        return experienceYears;
+    }
+
+    public void setExperienceYears(int experienceYears) {
+        this.experienceYears = experienceYears;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
                 "name='" + name + '\'' +
                 ", position='" + position + '\'' +
                 ", salary=" + salary +
+                ", department='" + department + '\'' +
+                ", experienceYears=" + experienceYears +
                 '}';
     }
 
@@ -52,12 +73,14 @@ public class Employee {
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
         return Double.compare(employee.salary, salary) == 0 &&
+                experienceYears == employee.experienceYears &&
                 Objects.equals(name, employee.name) &&
-                Objects.equals(position, employee.position);
+                Objects.equals(position, employee.position) &&
+                Objects.equals(department, employee.department);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, position, salary);
+        return Objects.hash(name, position, salary, department, experienceYears);
     }
 }
