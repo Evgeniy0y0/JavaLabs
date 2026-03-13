@@ -21,6 +21,9 @@ public class Employee {
     }
 
     public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
         this.name = name;
     }
 
@@ -29,6 +32,9 @@ public class Employee {
     }
 
     public void setPosition(String position) {
+        if (position == null || position.trim().isEmpty()) {
+            throw new IllegalArgumentException("Position cannot be null or empty");
+        }
         this.position = position;
     }
 
@@ -37,6 +43,9 @@ public class Employee {
     }
 
     public void setSalary(double salary) {
+        if (salary <= 0) {
+            throw new IllegalArgumentException("Salary must be positive");
+        }
         this.salary = salary;
     }
 
@@ -45,6 +54,9 @@ public class Employee {
     }
 
     public void setDepartment(String department) {
+        if (department == null || department.trim().isEmpty()) {
+            throw new IllegalArgumentException("Department cannot be null or empty");
+        }
         this.department = department;
     }
 
@@ -53,6 +65,9 @@ public class Employee {
     }
 
     public void setExperienceYears(int experienceYears) {
+        if (experienceYears < 0) {
+            throw new IllegalArgumentException("Experience years cannot be negative");
+        }
         this.experienceYears = experienceYears;
     }
 
