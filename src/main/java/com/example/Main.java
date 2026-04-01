@@ -1,5 +1,6 @@
 package com.example;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -7,8 +8,11 @@ import java.util.Scanner;
 public class Main {
     private static List<Employee> employees = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
+    private static final String FILE_NAME = "input.txt"; // константа
 
     public static void main(String[] args) {
+        loadFromFile(FILE_NAME);
+
         while (true) {
             printMainMenu();
             int choice = readIntInput();
@@ -20,10 +24,11 @@ public class Main {
                     printAllEmployees();
                     break;
                 case 3:
+                    saveToFile(FILE_NAME);
                     System.out.println("Exiting program...");
                     return;
                 default:
-                    System.out.println("Invalid choice. Please enter 1, 2 or 3.");
+                    System.out.println("Invalid choice.");
             }
         }
     }
@@ -68,6 +73,136 @@ public class Main {
                 default:
                     System.out.println("Invalid choice. Try again.");
             }
+        }
+    }
+
+    private static void loadFromFile(String fileName) {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            System.out.println("File not found. Starting with empty collection.");
+            return;
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            int lineNum = 0;
+            while ((line = reader.readLine()) != null) {
+                lineNum++;
+                line = line.trim();
+                if (line.isEmpty()) continue;
+                Employee emp = parseEmployee(line);
+                if (emp != null) {
+                    employees.add(emp);
+                } else {
+                    System.out.println("Skipping invalid line " + lineNum + ": " + line);
+                }
+            }
+            System.out.println("Loaded " + employees.size() + " employees from file.");
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+
+    private static void saveToFile(String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (Employee emp : employees) {
+                writer.write(formatEmployee(emp));
+                writer.newLine();
+            }
+            System.out.println("Saved " + employees.size() + " employees to file.");
+        } catch (IOException e) {
+            System.out.println("Error writing file: " + e.getMessage());
+        }
+    }
+
+    private static Employee parseEmployee(String line) {
+        String[] parts = line.split(";");
+        if (parts.length < 2) return null;
+
+        String type = parts[0];
+        try {
+            switch (type) {
+                case "Employee":
+                    if (parts.length != 7) return null;
+                    return new Employee(
+                            parts[1], parts[2], Double.parseDouble(parts[3]),
+                            parts[4], Integer.parseInt(parts[5]),
+                            EmploymentType.valueOf(parts[6])
+                    );
+                case "ContractEmployee":
+                    if (parts.length != 9) return null;
+                    return new ContractEmployee(
+                            parts[1], parts[2], Double.parseDouble(parts[3]),
+                            parts[4], Integer.parseInt(parts[5]),
+                            EmploymentType.valueOf(parts[6]),
+                            Double.parseDouble(parts[7]), Integer.parseInt(parts[8])
+                    );
+                case "FullTimeEmployee":
+                    if (parts.length != 9) return null;
+                    return new FullTimeEmployee(
+                            parts[1], parts[2], Double.parseDouble(parts[3]),
+                            parts[4], Integer.parseInt(parts[5]),
+                            EmploymentType.valueOf(parts[6]),
+                            Double.parseDouble(parts[7]), Integer.parseInt(parts[8])
+                    );
+                case "Intern":
+                    if (parts.length != 9) return null;
+                    return new Intern(
+                            parts[1], parts[2], Double.parseDouble(parts[3]),
+                            parts[4], Integer.parseInt(parts[5]),
+                            EmploymentType.valueOf(parts[6]),
+                            parts[7], Integer.parseInt(parts[8])
+                    );
+                case "Manager":
+                    if (parts.length != 9) return null;
+                    return new Manager(
+                            parts[1], parts[2], Double.parseDouble(parts[3]),
+                            parts[4], Integer.parseInt(parts[5]),
+                            EmploymentType.valueOf(parts[6]),
+                            Integer.parseInt(parts[7]), parts[8]
+                    );
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            System.out.println("Parse error: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private static String formatEmployee(Employee emp) {
+        if (emp instanceof ContractEmployee) {
+            ContractEmployee ce = (ContractEmployee) emp;
+            return String.format("ContractEmployee;%s;%s;%f;%s;%d;%s;%f;%d",
+                    ce.getName(), ce.getPosition(), ce.getSalary(),
+                    ce.getDepartment(), ce.getExperienceYears(),
+                    ce.getEmploymentType().name(),
+                    ce.getHourlyRate(), ce.getHoursWorked());
+        } else if (emp instanceof FullTimeEmployee) {
+            FullTimeEmployee fe = (FullTimeEmployee) emp;
+            return String.format("FullTimeEmployee;%s;%s;%f;%s;%d;%s;%f;%d",
+                    fe.getName(), fe.getPosition(), fe.getSalary(),
+                    fe.getDepartment(), fe.getExperienceYears(),
+                    fe.getEmploymentType().name(),
+                    fe.getBonus(), fe.getVacationDays());
+        } else if (emp instanceof Intern) {
+            Intern in = (Intern) emp;
+            return String.format("Intern;%s;%s;%f;%s;%d;%s;%s;%d",
+                    in.getName(), in.getPosition(), in.getSalary(),
+                    in.getDepartment(), in.getExperienceYears(),
+                    in.getEmploymentType().name(),
+                    in.getUniversity(), in.getDurationMonths());
+        } else if (emp instanceof Manager) {
+            Manager mg = (Manager) emp;
+            return String.format("Manager;%s;%s;%f;%s;%d;%s;%d;%s",
+                    mg.getName(), mg.getPosition(), mg.getSalary(),
+                    mg.getDepartment(), mg.getExperienceYears(),
+                    mg.getEmploymentType().name(),
+                    mg.getTeamSize(), mg.getManagedDepartment());
+        } else {
+            return String.format("Employee;%s;%s;%f;%s;%d;%s",
+                    emp.getName(), emp.getPosition(), emp.getSalary(),
+                    emp.getDepartment(), emp.getExperienceYears(),
+                    emp.getEmploymentType().name());
         }
     }
 
