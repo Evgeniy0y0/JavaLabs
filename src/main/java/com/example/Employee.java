@@ -2,7 +2,6 @@ package com.example;
 import java.util.Objects;
 
 public class Employee {
-    private static int objectCount = 0;
     private String name;
     private String position;
     private double salary;
@@ -17,7 +16,6 @@ public class Employee {
         setDepartment(department);
         setExperienceYears(experienceYears);
         setEmploymentType(employmentType);
-        objectCount++;
     }
 
     public Employee(Employee other) {
@@ -27,7 +25,6 @@ public class Employee {
         this.department = other.department;
         this.experienceYears = other.experienceYears;
         this.employmentType = other.employmentType;
-        objectCount++;
     }
 
     public String getName() {
@@ -83,10 +80,6 @@ public class Employee {
             throw new IllegalArgumentException("Experience years cannot be negative");
         }
         this.experienceYears = experienceYears;
-    }
-
-    public static int getObjectCount() {
-        return objectCount;
     }
 
     public EmploymentType getEmploymentType() {

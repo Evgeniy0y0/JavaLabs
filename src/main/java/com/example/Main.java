@@ -1,10 +1,12 @@
 package com.example;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    private static Company company = new Company("MyCompany");
+    private static List<Employee> employees = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
