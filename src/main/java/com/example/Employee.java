@@ -8,13 +8,15 @@ public class Employee {
     private double salary;
     private String department;
     private int experienceYears;
+    private EmploymentType employmentType;
 
-    public Employee(String name, String position, double salary, String department, int experienceYears) {
+    public Employee(String name, String position, double salary, String department, int experienceYears, EmploymentType employmentType) {
         setName(name);
         setPosition(position);
         setSalary(salary);
         setDepartment(department);
         setExperienceYears(experienceYears);
+        setEmploymentType(employmentType);
         objectCount++;
     }
 
@@ -24,6 +26,7 @@ public class Employee {
         this.salary = other.salary;
         this.department = other.department;
         this.experienceYears = other.experienceYears;
+        this.employmentType = other.employmentType;
         objectCount++;
     }
 
@@ -82,6 +85,17 @@ public class Employee {
         this.experienceYears = experienceYears;
     }
 
+    public EmploymentType getEmploymentType() {
+        return employmentType;
+    }
+
+    public void setEmploymentType(EmploymentType employmentType) {
+        if (employmentType == null) {
+            throw new IllegalArgumentException("Employment type cannot be null");
+        }
+        this.employmentType = employmentType;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
@@ -90,6 +104,7 @@ public class Employee {
                 ", salary=" + salary +
                 ", department='" + department + '\'' +
                 ", experienceYears=" + experienceYears +
+                ", employmentType=" + employmentType +
                 '}';
     }
 
@@ -102,11 +117,12 @@ public class Employee {
                 experienceYears == employee.experienceYears &&
                 Objects.equals(name, employee.name) &&
                 Objects.equals(position, employee.position) &&
-                Objects.equals(department, employee.department);
+                Objects.equals(department, employee.department) &&
+                employmentType == employee.employmentType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, position, salary, department, experienceYears);
+        return Objects.hash(name, position, salary, department, experienceYears, employmentType);
     }
 }
