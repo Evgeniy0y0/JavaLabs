@@ -85,6 +85,10 @@ public class Employee {
         this.experienceYears = experienceYears;
     }
 
+    public static int getObjectCount() {
+        return objectCount;
+    }
+
     public EmploymentType getEmploymentType() {
         return employmentType;
     }
