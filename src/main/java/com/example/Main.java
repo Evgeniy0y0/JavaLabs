@@ -1,34 +1,72 @@
 package com.example;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    private static ArrayList<Employee> employees = new ArrayList<>();
+    private static List<Employee> employees = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         while (true) {
-            printMenu();
+            printMainMenu();
             int choice = readIntInput();
             switch (choice) {
                 case 1:
-                    createEmployee();
+                    createObjectMenu();
                     break;
                 case 2:
-                    createContractEmployee();
-                    break;
-                case 3:
-                    createFullTimeEmployee();
-                    break;
-                case 4:
                     printAllEmployees();
                     break;
-                case 5:
+                case 3:
                     System.out.println("Exiting program...");
                     return;
                 default:
-                    System.out.println("Invalid choice. Please enter 1-5.");
+                    System.out.println("Invalid choice. Please enter 1, 2 or 3.");
+            }
+        }
+    }
+
+    private static void printMainMenu() {
+        System.out.println("\n=== Main Menu ===");
+        System.out.println("1. Create new object");
+        System.out.println("2. Show all objects");
+        System.out.println("3. Exit");
+        System.out.print("Your choice: ");
+    }
+
+    private static void createObjectMenu() {
+        while (true) {
+            System.out.println("\nSelect type of object to create:");
+            System.out.println("1. Employee");
+            System.out.println("2. Contract Employee");
+            System.out.println("3. Full-Time Employee");
+            System.out.println("4. Intern");
+            System.out.println("5. Manager");
+            System.out.println("6. Return to main menu");
+            System.out.print("Choice: ");
+            int type = readIntInput();
+            switch (type) {
+                case 1:
+                    createEmployee();
+                    return;
+                case 2:
+                    createContractEmployee();
+                    return;
+                case 3:
+                    createFullTimeEmployee();
+                    return;
+                case 4:
+                    createIntern();
+                    return;
+                case 5:
+                    createManager();
+                    return;
+                case 6:
+                    return;
+                default:
+                    System.out.println("Invalid choice. Try again.");
             }
         }
     }
@@ -50,6 +88,48 @@ public class Main {
             } catch (NumberFormatException e) {
                 System.out.print("Invalid input. Please enter a number: ");
             }
+        }
+    }
+
+    private static void createIntern() {
+        System.out.println("\n--- Create Intern ---");
+        String name = readString("Name: ");
+        String position = readString("Position: ");
+        double salary = readDouble("Salary: ");
+        String department = readString("Department: ");
+        int experience = readInt("Experience (years): ");
+        EmploymentType type = readEmploymentType();
+        String university = readString("University: ");
+        int duration = readInt("Duration (months): ");
+
+        try {
+            Intern intern = new Intern(name, position, salary, department, experience, type, university, duration);
+            employees.add(intern);
+            System.out.println("Intern added successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+            System.out.println("Intern not created.");
+        }
+    }
+
+    private static void createManager() {
+        System.out.println("\n--- Create Manager ---");
+        String name = readString("Name: ");
+        String position = readString("Position: ");
+        double salary = readDouble("Salary: ");
+        String department = readString("Department: ");
+        int experience = readInt("Experience (years): ");
+        EmploymentType type = readEmploymentType();
+        int teamSize = readInt("Team size: ");
+        String managedDept = readString("Managed department: ");
+
+        try {
+            Manager manager = new Manager(name, position, salary, department, experience, type, teamSize, managedDept);
+            employees.add(manager);
+            System.out.println("Manager added successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+            System.out.println("Manager not created.");
         }
     }
 
