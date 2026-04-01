@@ -2,6 +2,7 @@ package com.example;
 import java.util.Objects;
 
 public class Employee {
+    private static int objectCount = 0;
     private String name;
     private String position;
     private double salary;
@@ -14,6 +15,16 @@ public class Employee {
         setSalary(salary);
         setDepartment(department);
         setExperienceYears(experienceYears);
+        objectCount++;
+    }
+
+    public Employee(Employee other) {
+        this.name = other.name;
+        this.position = other.position;
+        this.salary = other.salary;
+        this.department = other.department;
+        this.experienceYears = other.experienceYears;
+        objectCount++;
     }
 
     public String getName() {
