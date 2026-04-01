@@ -18,12 +18,15 @@ public class Main {
             int choice = readIntInput();
             switch (choice) {
                 case 1:
-                    createObjectMenu();
+                    searchMenu();
                     break;
                 case 2:
-                    printAllEmployees();
+                    createObjectMenu();
                     break;
                 case 3:
+                    printAllEmployees();
+                    break;
+                case 4:
                     saveToFile(FILE_NAME);
                     System.out.println("Exiting program...");
                     return;
@@ -35,10 +38,93 @@ public class Main {
 
     private static void printMainMenu() {
         System.out.println("\n=== Main Menu ===");
-        System.out.println("1. Create new object");
-        System.out.println("2. Show all objects");
-        System.out.println("3. Exit");
+        System.out.println("1. Search objects");
+        System.out.println("2. Create new object");
+        System.out.println("3. Show all objects");
+        System.out.println("4. Exit");
         System.out.print("Your choice: ");
+    }
+
+    private static void searchMenu() {
+        while (true) {
+            System.out.println("\n=== Search Menu ===");
+            System.out.println("1. Search by name (contains)");
+            System.out.println("2. Search by department (exact match)");
+            System.out.println("3. Search by minimum salary");
+            System.out.println("4. Return to main menu");
+            System.out.print("Choice: ");
+            int choice = readIntInput();
+            switch (choice) {
+                case 1:
+                    searchByName();
+                    break;
+                case 2:
+                    searchByDepartment();
+                    break;
+                case 3:
+                    searchByMinSalary();
+                    break;
+                case 4:
+                    return;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    private static void searchByName() {
+        System.out.print("Enter name fragment: ");
+        String fragment = scanner.nextLine().trim();
+        if (fragment.isEmpty()) {
+            System.out.println("Search fragment cannot be empty.");
+            return;
+        }
+        List<Employee> results = new ArrayList<>();
+        for (Employee emp : employees) {
+            if (emp.getName().toLowerCase().contains(fragment.toLowerCase())) {
+                results.add(emp);
+            }
+        }
+        printSearchResults(results);
+    }
+
+    private static void searchByDepartment() {
+        System.out.print("Enter department name: ");
+        String dept = scanner.nextLine().trim();
+        if (dept.isEmpty()) {
+            System.out.println("Department cannot be empty.");
+            return;
+        }
+        List<Employee> results = new ArrayList<>();
+        for (Employee emp : employees) {
+            if (emp.getDepartment().equalsIgnoreCase(dept)) {
+                results.add(emp);
+            }
+        }
+        printSearchResults(results);
+    }
+
+    private static void searchByMinSalary() {
+        System.out.print("Enter minimum salary: ");
+        double minSalary = readDoubleInput(); // допоміжний метод
+        List<Employee> results = new ArrayList<>();
+        for (Employee emp : employees) {
+            if (emp.getSalary() >= minSalary) {
+                results.add(emp);
+            }
+        }
+        printSearchResults(results);
+    }
+
+    private static void printSearchResults(List<Employee> results) {
+        if (results.isEmpty()) {
+            System.out.println("No employees match the search criteria.");
+        } else {
+            System.out.println("\nFound " + results.size() + " employee(s):");
+            for (int i = 0; i < results.size(); i++) {
+                System.out.println((i + 1) + ". " + results.get(i));
+            }
+        }
     }
 
     private static void createObjectMenu() {
@@ -216,6 +302,44 @@ public class Main {
         System.out.print("Your choice: ");
     }
 
+    private static double readDoubleInput() {
+        while (true) {
+            try {
+                return Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid number. Please enter a valid number: ");
+            }
+        }
+    }
+
+
+    private static String readString(String prompt) {
+        System.out.print(prompt);
+        return scanner.nextLine();
+    }
+
+    private static double readDouble(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                return Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number format. Please try again.");
+            }
+        }
+    }
+
+    private static int readInt(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid integer format. Please try again.");
+            }
+        }
+    }
+
     private static int readIntInput() {
         while (true) {
             try {
@@ -338,33 +462,6 @@ public class Main {
         } else {
             for (int i = 0; i < employees.size(); i++) {
                 System.out.println((i + 1) + ". " + employees.get(i));
-            }
-        }
-    }
-
-    private static String readString(String prompt) {
-        System.out.print(prompt);
-        return scanner.nextLine();
-    }
-
-    private static double readDouble(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            try {
-                return Double.parseDouble(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid number format. Please try again.");
-            }
-        }
-    }
-
-    private static int readInt(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            try {
-                return Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid integer format. Please try again.");
             }
         }
     }
