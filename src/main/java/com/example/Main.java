@@ -6,12 +6,15 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    private static List<Employee> employees = new ArrayList<>();
+    private static Company company;
     private static Scanner scanner = new Scanner(System.in);
-    private static final String FILE_NAME = "input.txt"; // константа
+    private static final String FILE_NAME = "input.txt";
 
     public static void main(String[] args) {
         loadFromFile(FILE_NAME);
+        if (company == null) {
+            company = new Company("Default Company");
+        }
 
         while (true) {
             printMainMenu();
@@ -24,7 +27,7 @@ public class Main {
                     createObjectMenu();
                     break;
                 case 3:
-                    printAllEmployees();
+                    company.printAllEmployees();
                     break;
                 case 4:
                     saveToFile(FILE_NAME);
@@ -79,12 +82,7 @@ public class Main {
             System.out.println("Search fragment cannot be empty.");
             return;
         }
-        List<Employee> results = new ArrayList<>();
-        for (Employee emp : employees) {
-            if (emp.getName().toLowerCase().contains(fragment.toLowerCase())) {
-                results.add(emp);
-            }
-        }
+        List<Employee> results = company.searchByName(fragment);
         printSearchResults(results);
     }
 
@@ -95,24 +93,14 @@ public class Main {
             System.out.println("Department cannot be empty.");
             return;
         }
-        List<Employee> results = new ArrayList<>();
-        for (Employee emp : employees) {
-            if (emp.getDepartment().equalsIgnoreCase(dept)) {
-                results.add(emp);
-            }
-        }
+        List<Employee> results = company.searchByDepartment(dept);
         printSearchResults(results);
     }
 
     private static void searchByMinSalary() {
         System.out.print("Enter minimum salary: ");
-        double minSalary = readDoubleInput(); // допоміжний метод
-        List<Employee> results = new ArrayList<>();
-        for (Employee emp : employees) {
-            if (emp.getSalary() >= minSalary) {
-                results.add(emp);
-            }
-        }
+        double minSalary = readDoubleInput();
+        List<Employee> results = company.searchByMinSalary(minSalary);
         printSearchResults(results);
     }
 
@@ -162,48 +150,192 @@ public class Main {
         }
     }
 
+    // Create employee functions
+
+    private static void createEmployee() {
+        System.out.println("\n--- Create base Employee ---");
+        String name = readString("Name: ");
+        String position = readString("Position: ");
+        double salary = readDouble("Salary: ");
+        String department = readString("Department: ");
+        int experience = readInt("Experience (years): ");
+        EmploymentType employmentType = readEmploymentType();
+
+        try {
+            Employee emp = new Employee(name, position, salary, department, experience, employmentType);
+            company.addEmployee(emp, 1);
+            System.out.println("Base Employee added successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    private static void createContractEmployee() {
+        System.out.println("\n--- Create Contract Employee ---");
+        String name = readString("Name: ");
+        String position = readString("Position: ");
+        double salary = readDouble("Salary: ");
+        String department = readString("Department: ");
+        int experience = readInt("Experience (years): ");
+        EmploymentType employmentType = readEmploymentType();
+        double hourlyRate = readDouble("Hourly rate: ");
+        int hoursWorked = readInt("Hours worked: ");
+
+        try {
+            ContractEmployee emp = new ContractEmployee(name, position, salary, department,
+                    experience, employmentType, hourlyRate, hoursWorked);
+            company.addEmployee(emp, 1);
+            System.out.println("Contract Employee added successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    private static void createFullTimeEmployee() {
+        System.out.println("\n--- Create Full-Time Employee ---");
+        String name = readString("Name: ");
+        String position = readString("Position: ");
+        double salary = readDouble("Salary: ");
+        String department = readString("Department: ");
+        int experience = readInt("Experience (years): ");
+        EmploymentType employmentType = readEmploymentType();
+        double bonus = readDouble("Annual bonus: ");
+        int vacationDays = readInt("Vacation days: ");
+
+        try {
+            FullTimeEmployee emp = new FullTimeEmployee(name, position, salary, department,
+                    experience, employmentType, bonus, vacationDays);
+            company.addEmployee(emp, 1);
+            System.out.println("Full-Time Employee added successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    private static void createIntern() {
+        System.out.println("\n--- Create Intern ---");
+        String name = readString("Name: ");
+        String position = readString("Position: ");
+        double salary = readDouble("Salary: ");
+        String department = readString("Department: ");
+        int experience = readInt("Experience (years): ");
+        EmploymentType type = readEmploymentType();
+        String university = readString("University: ");
+        int duration = readInt("Duration (months): ");
+
+        try {
+            Intern intern = new Intern(name, position, salary, department, experience, type, university, duration);
+            company.addEmployee(intern, 1);
+            System.out.println("Intern added successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    private static void createManager() {
+        System.out.println("\n--- Create Manager ---");
+        String name = readString("Name: ");
+        String position = readString("Position: ");
+        double salary = readDouble("Salary: ");
+        String department = readString("Department: ");
+        int experience = readInt("Experience (years): ");
+        EmploymentType type = readEmploymentType();
+        int teamSize = readInt("Team size: ");
+        String managedDept = readString("Managed department: ");
+
+        try {
+            Manager manager = new Manager(name, position, salary, department, experience, type, teamSize, managedDept);
+            company.addEmployee(manager, 1);
+            System.out.println("Manager added successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    // File functions
+
     private static void loadFromFile(String fileName) {
         File file = new File(fileName);
         if (!file.exists()) {
             System.out.println("File not found. Starting with empty collection.");
+            company = new Company("Default Company");
             return;
         }
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String firstLine = reader.readLine();
+            if (firstLine == null || !firstLine.startsWith("Company;")) {
+                System.out.println("Invalid file format. Starting with empty company.");
+                company = new Company("Default Company");
+                return;
+            }
+            String companyName = firstLine.split(";")[1];
+            company = new Company(companyName);
+
             String line;
-            int lineNum = 0;
+            int lineNum = 1;
             while ((line = reader.readLine()) != null) {
                 lineNum++;
                 line = line.trim();
                 if (line.isEmpty()) continue;
-                Employee emp = parseEmployee(line);
-                if (emp != null) {
-                    employees.add(emp);
+                EmployeeWithQuantity eq = parseEmployeeWithQuantity(line);
+                if (eq != null) {
+                    company.addEmployee(eq.employee, eq.quantity);
                 } else {
                     System.out.println("Skipping invalid line " + lineNum + ": " + line);
                 }
             }
-            System.out.println("Loaded " + employees.size() + " employees from file.");
+            System.out.println("Loaded " + company.getAllRecords().size() + " employee types from file.");
         } catch (IOException e) {
             System.out.println("Error reading file: " + e.getMessage());
+            company = new Company("Default Company");
         }
     }
 
     private static void saveToFile(String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            for (Employee emp : employees) {
-                writer.write(formatEmployee(emp));
+            writer.write("Company;" + company.getName());
+            writer.newLine();
+            for (var record : company.getAllRecords()) {
+                Employee emp = record.getEmployee();
+                int qty = record.getQuantity();
+                String baseLine = formatEmployee(emp);
+                writer.write(baseLine + ";" + qty);
                 writer.newLine();
             }
-            System.out.println("Saved " + employees.size() + " employees to file.");
+            System.out.println("Saved " + company.getAllRecords().size() + " employee types to file.");
         } catch (IOException e) {
             System.out.println("Error writing file: " + e.getMessage());
         }
     }
 
+    // Parsing helpers
+
+    private static class EmployeeWithQuantity {
+        Employee employee;
+        int quantity;
+        EmployeeWithQuantity(Employee emp, int q) { employee = emp; quantity = q; }
+    }
+
+    private static EmployeeWithQuantity parseEmployeeWithQuantity(String line) {
+        String[] parts = line.split(";");
+        if (parts.length < 8) return null;
+        int quantity;
+        try {
+            quantity = Integer.parseInt(parts[parts.length - 1]);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+        String[] empParts = new String[parts.length - 1];
+        System.arraycopy(parts, 0, empParts, 0, parts.length - 1);
+        String empLine = String.join(";", empParts);
+        Employee emp = parseEmployee(empLine);
+        if (emp == null) return null;
+        return new EmployeeWithQuantity(emp, quantity);
+    }
+
     private static Employee parseEmployee(String line) {
         String[] parts = line.split(";");
         if (parts.length < 2) return null;
-
         String type = parts[0];
         try {
             switch (type) {
@@ -292,14 +424,14 @@ public class Main {
         }
     }
 
-    private static void printMenu() {
-        System.out.println("\n=== Menu ===");
-        System.out.println("1. Create base Employee");
-        System.out.println("2. Create Contract Employee");
-        System.out.println("3. Create Full-Time Employee");
-        System.out.println("4. Show all employees");
-        System.out.println("5. Exit");
-        System.out.print("Your choice: ");
+    private static int readIntInput() {
+        while (true) {
+            try {
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid input. Please enter a number: ");
+            }
+        }
     }
 
     private static double readDoubleInput() {
@@ -311,7 +443,6 @@ public class Main {
             }
         }
     }
-
 
     private static String readString(String prompt) {
         System.out.print(prompt);
@@ -336,132 +467,6 @@ public class Main {
                 return Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid integer format. Please try again.");
-            }
-        }
-    }
-
-    private static int readIntInput() {
-        while (true) {
-            try {
-                return Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.print("Invalid input. Please enter a number: ");
-            }
-        }
-    }
-
-    private static void createIntern() {
-        System.out.println("\n--- Create Intern ---");
-        String name = readString("Name: ");
-        String position = readString("Position: ");
-        double salary = readDouble("Salary: ");
-        String department = readString("Department: ");
-        int experience = readInt("Experience (years): ");
-        EmploymentType type = readEmploymentType();
-        String university = readString("University: ");
-        int duration = readInt("Duration (months): ");
-
-        try {
-            Intern intern = new Intern(name, position, salary, department, experience, type, university, duration);
-            employees.add(intern);
-            System.out.println("Intern added successfully.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-            System.out.println("Intern not created.");
-        }
-    }
-
-    private static void createManager() {
-        System.out.println("\n--- Create Manager ---");
-        String name = readString("Name: ");
-        String position = readString("Position: ");
-        double salary = readDouble("Salary: ");
-        String department = readString("Department: ");
-        int experience = readInt("Experience (years): ");
-        EmploymentType type = readEmploymentType();
-        int teamSize = readInt("Team size: ");
-        String managedDept = readString("Managed department: ");
-
-        try {
-            Manager manager = new Manager(name, position, salary, department, experience, type, teamSize, managedDept);
-            employees.add(manager);
-            System.out.println("Manager added successfully.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-            System.out.println("Manager not created.");
-        }
-    }
-
-    private static void createEmployee() {
-        System.out.println("\n--- Create base Employee ---");
-        String name = readString("Name: ");
-        String position = readString("Position: ");
-        double salary = readDouble("Salary: ");
-        String department = readString("Department: ");
-        int experience = readInt("Experience (years): ");
-        EmploymentType employmentType = readEmploymentType();
-
-        try {
-            Employee emp = new Employee(name, position, salary, department, experience, employmentType);
-            employees.add(emp);
-            System.out.println("Base Employee added successfully.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-            System.out.println("Employee not created.");
-        }
-    }
-
-    private static void createContractEmployee() {
-        System.out.println("\n--- Create Contract Employee ---");
-        String name = readString("Name: ");
-        String position = readString("Position: ");
-        double salary = readDouble("Salary: ");
-        String department = readString("Department: ");
-        int experience = readInt("Experience (years): ");
-        EmploymentType employmentType = readEmploymentType();
-        double hourlyRate = readDouble("Hourly rate: ");
-        int hoursWorked = readInt("Hours worked: ");
-
-        try {
-            ContractEmployee emp = new ContractEmployee(name, position, salary, department,
-                    experience, employmentType, hourlyRate, hoursWorked);
-            employees.add(emp);
-            System.out.println("Contract Employee added successfully.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-            System.out.println("Employee not created.");
-        }
-    }
-
-    private static void createFullTimeEmployee() {
-        System.out.println("\n--- Create Full-Time Employee ---");
-        String name = readString("Name: ");
-        String position = readString("Position: ");
-        double salary = readDouble("Salary: ");
-        String department = readString("Department: ");
-        int experience = readInt("Experience (years): ");
-        EmploymentType employmentType = readEmploymentType();
-        double bonus = readDouble("Annual bonus: ");
-        int vacationDays = readInt("Vacation days: ");
-
-        try {
-            FullTimeEmployee emp = new FullTimeEmployee(name, position, salary, department,
-                    experience, employmentType, bonus, vacationDays);
-            employees.add(emp);
-            System.out.println("Full-Time Employee added successfully.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-            System.out.println("Employee not created.");
-        }
-    }
-
-    private static void printAllEmployees() {
-        System.out.println("\n--- List of employees ---");
-        if (employees.isEmpty()) {
-            System.out.println("No employees yet.");
-        } else {
-            for (int i = 0; i < employees.size(); i++) {
-                System.out.println((i + 1) + ". " + employees.get(i));
             }
         }
     }
