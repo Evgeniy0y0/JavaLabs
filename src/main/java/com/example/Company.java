@@ -3,6 +3,7 @@ package com.example;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 public class Company {
     private String name;
@@ -58,6 +59,15 @@ public class Company {
             }
         }
         return results;
+    }
+
+    public Employee findEmployeeByUuid(UUID uuid) {
+        for (EmployeeRecord record : items) {
+            if (record.getEmployee().getUuid().equals(uuid)) {
+                return record.getEmployee();
+            }
+        }
+        return null;
     }
 
     public List<EmployeeRecord> getAllRecords() {

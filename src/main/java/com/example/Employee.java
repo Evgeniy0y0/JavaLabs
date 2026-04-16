@@ -1,7 +1,9 @@
 package com.example;
 import java.util.Objects;
+import java.util.UUID;
 
-public abstract class Employee implements Comparable<Employee> {
+public abstract class Employee implements Comparable<Employee>, Identifiable {
+    private UUID uuid;
     private String name;
     private String position;
     private double salary;
@@ -10,6 +12,7 @@ public abstract class Employee implements Comparable<Employee> {
     private EmploymentType employmentType;
 
     public Employee(String name, String position, double salary, String department, int experienceYears, EmploymentType employmentType) {
+        this.uuid = UUID.randomUUID();
         setName(name);
         setPosition(position);
         setSalary(salary);
@@ -19,6 +22,7 @@ public abstract class Employee implements Comparable<Employee> {
     }
 
     public Employee(Employee other) {
+        this.uuid = UUID.randomUUID();
         this.name = other.name;
         this.position = other.position;
         this.salary = other.salary;
@@ -96,6 +100,7 @@ public abstract class Employee implements Comparable<Employee> {
     @Override
     public String toString() {
         return "Employee{" +
+                "uuid=" + uuid.toString().substring(0,8) + "..." +
                 "name='" + name + '\'' +
                 ", position='" + position + '\'' +
                 ", salary=" + salary +
@@ -126,5 +131,10 @@ public abstract class Employee implements Comparable<Employee> {
     @Override
     public int compareTo(Employee other) {
         return this.name.compareToIgnoreCase(other.name);
+    }
+
+    @Override
+    public UUID getUuid() {
+        return uuid;
     }
 }

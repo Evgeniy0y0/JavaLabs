@@ -1,10 +1,7 @@
 package com.example;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     private static Company company;
@@ -58,7 +55,8 @@ public class Main {
             System.out.println("1. Search by name (contains)");
             System.out.println("2. Search by department (exact match)");
             System.out.println("3. Search by minimum salary");
-            System.out.println("4. Return to main menu");
+            System.out.println("4. Search by UUID");
+            System.out.println("5. Return to main menu");
             System.out.print("Choice: ");
             int choice = readIntInput();
             switch (choice) {
@@ -72,6 +70,9 @@ public class Main {
                     searchByMinSalary();
                     break;
                 case 4:
+                    searchByUuid();
+                    break;
+                case 5:
                     return;
                 default:
                     System.out.println("Invalid choice.");
@@ -136,6 +137,22 @@ public class Main {
         double minSalary = readDoubleInput();
         List<Employee> results = company.searchByMinSalary(minSalary);
         printSearchResults(results);
+    }
+
+    private static void searchByUuid() {
+        System.out.print("Enter UUID (e.g., 123e4567-e89b-12d3-a456-426614174000): ");
+        String input = scanner.nextLine().trim();
+        try {
+            UUID uuid = UUID.fromString(input);
+            Employee emp = company.findEmployeeByUuid(uuid);
+            if (emp == null) {
+                System.out.println("Employee with UUID " + uuid + " not found.");
+            } else {
+                System.out.println("Found: " + emp); // виведе всі поля
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid UUID format. Please try again.");
+        }
     }
 
     private static void printSearchResults(List<Employee> results) {
