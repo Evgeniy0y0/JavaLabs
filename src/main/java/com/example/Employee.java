@@ -1,7 +1,7 @@
 package com.example;
 import java.util.Objects;
 
-public class Employee {
+public abstract class Employee implements Comparable<Employee> {
     private String name;
     private String position;
     private double salary;
@@ -121,5 +121,10 @@ public class Employee {
     @Override
     public int hashCode() {
         return Objects.hash(name, position, salary, department, experienceYears, employmentType);
+    }
+
+    @Override
+    public int compareTo(Employee other) {
+        return this.name.compareToIgnoreCase(other.name);
     }
 }
