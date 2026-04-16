@@ -1,6 +1,7 @@
 package com.example;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Company {
@@ -86,5 +87,24 @@ public class Company {
         public Employee getEmployee() { return employee; }
         public int getQuantity() { return quantity; }
         public void addQuantity(int delta) { this.quantity += delta; }
+    }
+
+    public List<EmployeeRecord> getSortedRecords() {
+        List<EmployeeRecord> sorted = new ArrayList<>(items);
+        sorted.sort(Comparator.comparing(EmployeeRecord::getEmployee));
+        return sorted;
+    }
+
+    public void printSortedEmployees() {
+        List<EmployeeRecord> sorted = getSortedRecords();
+        if (sorted.isEmpty()) {
+            System.out.println("No employees yet.");
+        } else {
+            System.out.println("\n--- Sorted employees (by name) ---");
+            for (int i = 0; i < sorted.size(); i++) {
+                EmployeeRecord record = sorted.get(i);
+                System.out.println((i + 1) + ". " + record.getEmployee() + " x" + record.getQuantity());
+            }
+        }
     }
 }

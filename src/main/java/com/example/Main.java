@@ -30,8 +30,10 @@ public class Main {
                     company.printAllEmployees();
                     break;
                 case 4:
-                    saveToFile(FILE_NAME);
-                    System.out.println("Exiting program...");
+                    company.printSortedEmployees();
+                    break;
+                case 5:
+                    saveToFile(FILE_NAME); System.out.println("Exiting...");
                     return;
                 default:
                     System.out.println("Invalid choice.");
@@ -44,7 +46,8 @@ public class Main {
         System.out.println("1. Search objects");
         System.out.println("2. Create new object");
         System.out.println("3. Show all objects");
-        System.out.println("4. Exit");
+        System.out.println("4. Show sorted objects (by name)");
+        System.out.println("5. Exit");
         System.out.print("Your choice: ");
     }
 
@@ -118,32 +121,19 @@ public class Main {
     private static void createObjectMenu() {
         while (true) {
             System.out.println("\nSelect type of object to create:");
-            System.out.println("1. Employee");
-            System.out.println("2. Contract Employee");
-            System.out.println("3. Full-Time Employee");
-            System.out.println("4. Intern");
-            System.out.println("5. Manager");
-            System.out.println("6. Return to main menu");
+            System.out.println("1. Contract Employee");
+            System.out.println("2. Full-Time Employee");
+            System.out.println("3. Intern");
+            System.out.println("4. Manager");
+            System.out.println("5. Return to main menu");
             System.out.print("Choice: ");
             int type = readIntInput();
             switch (type) {
-                case 1:
-                    createEmployee();
-                    return;
-                case 2:
-                    createContractEmployee();
-                    return;
-                case 3:
-                    createFullTimeEmployee();
-                    return;
-                case 4:
-                    createIntern();
-                    return;
-                case 5:
-                    createManager();
-                    return;
-                case 6:
-                    return;
+                case 1: createContractEmployee(); return;
+                case 2: createFullTimeEmployee(); return;
+                case 3: createIntern(); return;
+                case 4: createManager(); return;
+                case 5: return;
                 default:
                     System.out.println("Invalid choice. Try again.");
             }
@@ -151,25 +141,6 @@ public class Main {
     }
 
     // Create employee functions
-
-    private static void createEmployee() {
-        System.out.println("\n--- Create base Employee ---");
-        String name = readString("Name: ");
-        String position = readString("Position: ");
-        double salary = readDouble("Salary: ");
-        String department = readString("Department: ");
-        int experience = readInt("Experience (years): ");
-        EmploymentType employmentType = readEmploymentType();
-
-        try {
-            Employee emp = new Employee(name, position, salary, department, experience, employmentType);
-            company.addEmployee(emp, 1);
-            System.out.println("Base Employee added successfully.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-    }
-
     private static void createContractEmployee() {
         System.out.println("\n--- Create Contract Employee ---");
         String name = readString("Name: ");
@@ -339,13 +310,6 @@ public class Main {
         String type = parts[0];
         try {
             switch (type) {
-                case "Employee":
-                    if (parts.length != 7) return null;
-                    return new Employee(
-                            parts[1], parts[2], Double.parseDouble(parts[3]),
-                            parts[4], Integer.parseInt(parts[5]),
-                            EmploymentType.valueOf(parts[6])
-                    );
                 case "ContractEmployee":
                     if (parts.length != 9) return null;
                     return new ContractEmployee(
