@@ -90,30 +90,15 @@ public class Main {
             int choice = readIntInput();
             switch (choice) {
                 case 1:
-                    Comparator<Employee> byName = new Comparator<Employee>() {
-                        @Override
-                        public int compare(Employee e1, Employee e2) {
-                            return e1.getName().compareToIgnoreCase(e2.getName());
-                        }
-                    };
+                    Comparator<Employee> byName = (e1, e2) -> e1.getName().compareToIgnoreCase(e2.getName());
                     company.printSortedEmployees(byName, "name");
                     break;
                 case 2:
-                    Comparator<Employee> bySalary = new Comparator<Employee>() {
-                        @Override
-                        public int compare(Employee e1, Employee e2) {
-                            return Double.compare(e1.getSalary(), e2.getSalary());
-                        }
-                    };
+                    Comparator<Employee> bySalary = (e1, e2) -> Double.compare(e1.getSalary(), e2.getSalary());
                     company.printSortedEmployees(bySalary, "salary (low to high)");
                     break;
                 case 3:
-                    Comparator<Employee> byExperienceDesc = new Comparator<Employee>() {
-                        @Override
-                        public int compare(Employee e1, Employee e2) {
-                            return Integer.compare(e2.getExperienceYears(), e1.getExperienceYears());
-                        }
-                    };
+                    Comparator<Employee> byExperienceDesc = (e1, e2) -> Integer.compare(e2.getExperienceYears(), e1.getExperienceYears());
                     company.printSortedEmployees(byExperienceDesc, "experience (high to low)");
                     break;
                 case 4:
