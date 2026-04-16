@@ -89,18 +89,18 @@ public class Company {
         public void addQuantity(int delta) { this.quantity += delta; }
     }
 
-    public List<EmployeeRecord> getSortedRecords() {
+    public List<EmployeeRecord> getSortedRecords(Comparator<Employee> comparator) {
         List<EmployeeRecord> sorted = new ArrayList<>(items);
-        sorted.sort(Comparator.comparing(EmployeeRecord::getEmployee));
+        sorted.sort(Comparator.comparing(EmployeeRecord::getEmployee, comparator));
         return sorted;
     }
 
-    public void printSortedEmployees() {
-        List<EmployeeRecord> sorted = getSortedRecords();
+    public void printSortedEmployees(Comparator<Employee> comparator, String criteriaName) {
+        List<EmployeeRecord> sorted = getSortedRecords(comparator);
         if (sorted.isEmpty()) {
             System.out.println("No employees yet.");
         } else {
-            System.out.println("\n--- Sorted employees (by name) ---");
+            System.out.println("\n--- Sorted employees by " + criteriaName + " ---");
             for (int i = 0; i < sorted.size(); i++) {
                 EmployeeRecord record = sorted.get(i);
                 System.out.println((i + 1) + ". " + record.getEmployee() + " x" + record.getQuantity());

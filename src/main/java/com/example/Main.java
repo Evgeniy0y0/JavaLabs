@@ -2,6 +2,7 @@ package com.example;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -30,7 +31,7 @@ public class Main {
                     company.printAllEmployees();
                     break;
                 case 4:
-                    company.printSortedEmployees();
+                    sortMenu();
                     break;
                 case 5:
                     saveToFile(FILE_NAME); System.out.println("Exiting...");
@@ -46,7 +47,7 @@ public class Main {
         System.out.println("1. Search objects");
         System.out.println("2. Create new object");
         System.out.println("3. Show all objects");
-        System.out.println("4. Show sorted objects (by name)");
+        System.out.println("4. Sort and show objects");
         System.out.println("5. Exit");
         System.out.print("Your choice: ");
     }
@@ -69,6 +70,51 @@ public class Main {
                     break;
                 case 3:
                     searchByMinSalary();
+                    break;
+                case 4:
+                    return;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    private static void sortMenu() {
+        while (true) {
+            System.out.println("\n=== Sort Criteria ===");
+            System.out.println("1. By name (ascending)");
+            System.out.println("2. By salary (ascending)");
+            System.out.println("3. By experience years (descending)");
+            System.out.println("4. Return to main menu");
+            System.out.print("Choice: ");
+            int choice = readIntInput();
+            switch (choice) {
+                case 1:
+                    Comparator<Employee> byName = new Comparator<Employee>() {
+                        @Override
+                        public int compare(Employee e1, Employee e2) {
+                            return e1.getName().compareToIgnoreCase(e2.getName());
+                        }
+                    };
+                    company.printSortedEmployees(byName, "name");
+                    break;
+                case 2:
+                    Comparator<Employee> bySalary = new Comparator<Employee>() {
+                        @Override
+                        public int compare(Employee e1, Employee e2) {
+                            return Double.compare(e1.getSalary(), e2.getSalary());
+                        }
+                    };
+                    company.printSortedEmployees(bySalary, "salary (low to high)");
+                    break;
+                case 3:
+                    Comparator<Employee> byExperienceDesc = new Comparator<Employee>() {
+                        @Override
+                        public int compare(Employee e1, Employee e2) {
+                            return Integer.compare(e2.getExperienceYears(), e1.getExperienceYears());
+                        }
+                    };
+                    company.printSortedEmployees(byExperienceDesc, "experience (high to low)");
                     break;
                 case 4:
                     return;
