@@ -1,5 +1,6 @@
 Company;MySuperCompany
-ContractEmployee;Alice Smith;Consultant;4000.0;Sales;2;CONTRACTOR;25.0;160;1
-FullTimeEmployee;Bob Johnson;Manager;6000.0;HR;5;FULL_TIME;2000.0;20;3
-Intern;Eva Brown;Trainee;1500.0;Engineering;0;PART_TIME;Harvard;6;1
-Manager;Charlie White;Team Lead;7000.0;IT;8;FULL_TIME;5;Development;1
+ContractEmployee;Alice Smith;Consultant;4000.000000;Sales;2;CONTRACTOR;25.000000;160;1
+FullTimeEmployee;Bob Johnson;Manager;6000.000000;HR;5;FULL_TIME;2000.000000;20;3
+Intern;Eva Brown;Trainee;1500.000000;Engineering;0;PART_TIME;Harvard;6;1
+Manager;Charlie White;Team Lead;7000.000000;IT;8;FULL_TIME;5;Development;1
+Intern;Volodymyr;CEO;30000.000000;QA;15;FULL_TIME;SSU;5;1
