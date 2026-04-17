@@ -85,26 +85,26 @@ public class Company {
         }
     }
 
-    public boolean update(Employee oldEmployee, Employee newEmployee) {
+    public void update(Employee oldEmployee, Employee newEmployee) {
         for (int i = 0; i < items.size(); i++) {
             EmployeeRecord record = items.get(i);
             if (record.getEmployee().equals(oldEmployee)) {
                 int quantity = record.getQuantity();
                 items.set(i, new EmployeeRecord(newEmployee, quantity));
-                return true;
+                return;
             }
         }
-        return false;
+        throw new ObjectNotFoundException("Employee to update not found: " + oldEmployee.getName());
     }
 
-    public boolean delete(Employee employee) {
+    public void delete(Employee employee) {
         for (int i = 0; i < items.size(); i++) {
             if (items.get(i).getEmployee().equals(employee)) {
                 items.remove(i);
-                return true;
+                return;
             }
         }
-        return false;
+        throw new ObjectNotFoundException("Employee to delete not found: " + employee.getName());
     }
 
     public static class EmployeeRecord {

@@ -37,7 +37,7 @@ public abstract class Employee implements Comparable<Employee>, Identifiable {
 
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
+            throw new InvalidEmployeeDataException("Name cannot be null or empty");
         }
         this.name = name;
     }
@@ -48,7 +48,7 @@ public abstract class Employee implements Comparable<Employee>, Identifiable {
 
     public void setPosition(String position) {
         if (position == null || position.trim().isEmpty()) {
-            throw new IllegalArgumentException("Position cannot be null or empty");
+            throw new InvalidEmployeeDataException("Position cannot be null or empty");
         }
         this.position = position;
     }
@@ -59,7 +59,7 @@ public abstract class Employee implements Comparable<Employee>, Identifiable {
 
     public void setSalary(double salary) {
         if (salary <= 0) {
-            throw new IllegalArgumentException("Salary must be positive");
+            throw new InvalidEmployeeDataException("Salary must be positive");
         }
         this.salary = salary;
     }
@@ -70,7 +70,7 @@ public abstract class Employee implements Comparable<Employee>, Identifiable {
 
     public void setDepartment(String department) {
         if (department == null || department.trim().isEmpty()) {
-            throw new IllegalArgumentException("Department cannot be null or empty");
+            throw new InvalidEmployeeDataException("Department cannot be null or empty");
         }
         this.department = department;
     }
@@ -81,7 +81,7 @@ public abstract class Employee implements Comparable<Employee>, Identifiable {
 
     public void setExperienceYears(int experienceYears) {
         if (experienceYears < 0) {
-            throw new IllegalArgumentException("Experience years cannot be negative");
+            throw new InvalidEmployeeDataException("Experience years cannot be negative");
         }
         this.experienceYears = experienceYears;
     }
@@ -92,7 +92,7 @@ public abstract class Employee implements Comparable<Employee>, Identifiable {
 
     public void setEmploymentType(EmploymentType employmentType) {
         if (employmentType == null) {
-            throw new IllegalArgumentException("Employment type cannot be null");
+            throw new InvalidEmployeeDataException("Employment type cannot be null");
         }
         this.employmentType = employmentType;
     }

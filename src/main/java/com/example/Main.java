@@ -170,12 +170,11 @@ public class Main {
                     System.out.println("Invalid attribute.");
                     return;
             }
-            if (company.update(oldEmp, newEmp)) {
-                System.out.println("Employee updated successfully.");
-            } else {
-                System.out.println("Update failed (employee not found).");
-            }
-        } catch (IllegalArgumentException e) {
+            company.update(oldEmp, newEmp);
+            System.out.println("Employee updated successfully.");
+        } catch (InvalidEmployeeDataException e) {
+            System.out.println("Invalid data: " + e.getMessage());
+        } catch (ObjectNotFoundException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
@@ -221,10 +220,11 @@ public class Main {
         System.out.print("Are you sure you want to delete " + emp.getName() + "? (y/n): ");
         String confirm = scanner.nextLine().trim();
         if (confirm.equalsIgnoreCase("y")) {
-            if (company.delete(emp)) {
-                System.out.println("Employee deleted.");
-            } else {
-                System.out.println("Delete failed.");
+            try {
+                company.delete(emp);
+                System.out.println("Employee deleted successfully.");
+            } catch (ObjectNotFoundException e) {
+                System.out.println("Error: " + e.getMessage());
             }
         } else {
             System.out.println("Deletion cancelled.");
@@ -326,7 +326,7 @@ public class Main {
                     experience, employmentType, hourlyRate, hoursWorked);
             company.addEmployee(emp, 1);
             System.out.println("Contract Employee added successfully.");
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidEmployeeDataException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
@@ -347,7 +347,7 @@ public class Main {
                     experience, employmentType, bonus, vacationDays);
             company.addEmployee(emp, 1);
             System.out.println("Full-Time Employee added successfully.");
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidEmployeeDataException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
@@ -367,7 +367,7 @@ public class Main {
             Intern intern = new Intern(name, position, salary, department, experience, type, university, duration);
             company.addEmployee(intern, 1);
             System.out.println("Intern added successfully.");
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidEmployeeDataException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
@@ -387,7 +387,7 @@ public class Main {
             Manager manager = new Manager(name, position, salary, department, experience, type, teamSize, managedDept);
             company.addEmployee(manager, 1);
             System.out.println("Manager added successfully.");
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidEmployeeDataException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
