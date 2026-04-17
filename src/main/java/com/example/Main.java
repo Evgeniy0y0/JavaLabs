@@ -31,6 +31,10 @@ public class Main {
                     sortMenu();
                     break;
                 case 5:
+                    updateObject(); break;
+                case 6:
+                    deleteObject(); break;
+                case 7:
                     saveToFile(FILE_NAME); System.out.println("Exiting...");
                     return;
                 default:
@@ -45,7 +49,9 @@ public class Main {
         System.out.println("2. Create new object");
         System.out.println("3. Show all objects");
         System.out.println("4. Sort and show objects");
-        System.out.println("5. Exit");
+        System.out.println("5. Update an object");
+        System.out.println("6. Delete an object");
+        System.out.println("7. Exit");
         System.out.print("Your choice: ");
     }
 
@@ -107,6 +113,121 @@ public class Main {
                 default:
                     System.out.println("Invalid choice.");
             }
+        }
+    }
+
+    private static void updateObject() {
+        if (company.getAllRecords().isEmpty()) {
+            System.out.println("No employees to update.");
+            return;
+        }
+        company.printAllEmployees();
+        int index = readInt("Enter the number of the employee to update: ") - 1;
+        if (index < 0 || index >= company.getAllRecords().size()) {
+            System.out.println("Invalid index.");
+            return;
+        }
+        Employee oldEmp = company.getAllRecords().get(index).getEmployee();
+        System.out.println("Selected: " + oldEmp.getName());
+
+        System.out.println("What do you want to change?");
+        System.out.println("1. Name");
+        System.out.println("2. Position");
+        System.out.println("3. Salary");
+        System.out.println("4. Department");
+        System.out.println("5. Experience years");
+        System.out.println("6. Employment type");
+        int attr = readIntInput();
+        Employee newEmp = null;
+        try {
+            newEmp = cloneEmployee(oldEmp);
+            switch (attr) {
+                case 1:
+                    String newName = readString("New name: ");
+                    newEmp.setName(newName);
+                    break;
+                case 2:
+                    String newPos = readString("New position: ");
+                    newEmp.setPosition(newPos);
+                    break;
+                case 3:
+                    double newSalary = readDouble("New salary: ");
+                    newEmp.setSalary(newSalary);
+                    break;
+                case 4:
+                    String newDept = readString("New department: ");
+                    newEmp.setDepartment(newDept);
+                    break;
+                case 5:
+                    int newExp = readInt("New experience (years): ");
+                    newEmp.setExperienceYears(newExp);
+                    break;
+                case 6:
+                    EmploymentType newType = readEmploymentType();
+                    newEmp.setEmploymentType(newType);
+                    break;
+                default:
+                    System.out.println("Invalid attribute.");
+                    return;
+            }
+            if (company.update(oldEmp, newEmp)) {
+                System.out.println("Employee updated successfully.");
+            } else {
+                System.out.println("Update failed (employee not found).");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    private static Employee cloneEmployee(Employee original) {
+        if (original instanceof ContractEmployee) {
+            ContractEmployee ce = (ContractEmployee) original;
+            return new ContractEmployee(ce.getName(), ce.getPosition(), ce.getSalary(),
+                    ce.getDepartment(), ce.getExperienceYears(), ce.getEmploymentType(),
+                    ce.getHourlyRate(), ce.getHoursWorked());
+        } else if (original instanceof FullTimeEmployee) {
+            FullTimeEmployee fe = (FullTimeEmployee) original;
+            return new FullTimeEmployee(fe.getName(), fe.getPosition(), fe.getSalary(),
+                    fe.getDepartment(), fe.getExperienceYears(), fe.getEmploymentType(),
+                    fe.getBonus(), fe.getVacationDays());
+        } else if (original instanceof Intern) {
+            Intern in = (Intern) original;
+            return new Intern(in.getName(), in.getPosition(), in.getSalary(),
+                    in.getDepartment(), in.getExperienceYears(), in.getEmploymentType(),
+                    in.getUniversity(), in.getDurationMonths());
+        } else if (original instanceof Manager) {
+            Manager mg = (Manager) original;
+            return new Manager(mg.getName(), mg.getPosition(), mg.getSalary(),
+                    mg.getDepartment(), mg.getExperienceYears(), mg.getEmploymentType(),
+                    mg.getTeamSize(), mg.getManagedDepartment());
+        } else {
+            throw new IllegalArgumentException("Unknown employee type");
+        }
+    }
+
+    private static void deleteObject() {
+        if (company.getAllRecords().isEmpty()) {
+            System.out.println("No employees to delete.");
+            return;
+        }
+        company.printAllEmployees();
+        int index = readInt("Enter the number of the employee to delete: ") - 1;
+        if (index < 0 || index >= company.getAllRecords().size()) {
+            System.out.println("Invalid index.");
+            return;
+        }
+        Employee emp = company.getAllRecords().get(index).getEmployee();
+        System.out.print("Are you sure you want to delete " + emp.getName() + "? (y/n): ");
+        String confirm = scanner.nextLine().trim();
+        if (confirm.equalsIgnoreCase("y")) {
+            if (company.delete(emp)) {
+                System.out.println("Employee deleted.");
+            } else {
+                System.out.println("Delete failed.");
+            }
+        } else {
+            System.out.println("Deletion cancelled.");
         }
     }
 

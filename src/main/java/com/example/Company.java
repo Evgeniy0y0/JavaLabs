@@ -85,6 +85,28 @@ public class Company {
         }
     }
 
+    public boolean update(Employee oldEmployee, Employee newEmployee) {
+        for (int i = 0; i < items.size(); i++) {
+            EmployeeRecord record = items.get(i);
+            if (record.getEmployee().equals(oldEmployee)) {
+                int quantity = record.getQuantity();
+                items.set(i, new EmployeeRecord(newEmployee, quantity));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean delete(Employee employee) {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getEmployee().equals(employee)) {
+                items.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static class EmployeeRecord {
         private Employee employee;
         private int quantity;
